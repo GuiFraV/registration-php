@@ -1,12 +1,34 @@
 <?php 
 
-    if(isset($_POST['envoi'])){
-        if(!empty($_POST['pseudo'] AND !empty($_POST['mdp']))){
+session_start();
 
-        }else{
-            echo 'Veuillez remplir tous les champs !';
+$bdd = new PDO('mysql:host=localhost;dbname=espace_membre;', 'root', 'root');
+
+
+if(isset($_POST['envoi'])){
+    if(!empty($_POST['pseudo'] AND !empty($_POST['mdp']))){
+
+        $pseudo = htmlspecialchars($_POST['pseudo']);
+        $mdp = sha1($_POST['mdp']);
+        $insertUser = $bdd->prepare('INSERT INTO membres(pseudo, motdepasse)VALUES(?,?) ');
+        $insertUser->execute(array($pseudo, $mdp));
+
+        $recupUser = $bdd->prepare('SELECT * FROM membres WHERE pseudo = ? AND motdepasse = ?');
+        $recupUser->execute(array($pseudo, $mdp));
+
+        if($recupUser->rowCount() > 0){
+    
+            $_SESSION['pseudo'] = $pseudo;
+            $_SESSION['mdp'] = $mdp;
+            $_SESSION['id'] = $recupUser->fetch()['id'];
         }
+
+        echo $_SESSION['id'];
+
+    }else{
+        echo 'Veuillez remplir tous les champs !';
     }
+}
 
 
 
