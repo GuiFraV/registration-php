@@ -10,6 +10,7 @@ if(isset($_POST['envoi'])){
 
         $pseudo = htmlspecialchars($_POST['pseudo']);
         $mdp = sha1($_POST['mdp']);
+        
         $insertUser = $bdd->prepare('INSERT INTO membres(pseudo, motdepasse)VALUES(?,?) ');
         $insertUser->execute(array($pseudo, $mdp));
 
